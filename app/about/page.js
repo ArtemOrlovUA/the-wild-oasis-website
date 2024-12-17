@@ -4,7 +4,7 @@ export default function Cabins() {
   return (
     <>
       <h1>About us</h1>
-      <Link href="/">Gp to main page</Link>
+      <Link href="/">Go to main page</Link>
     </>
   );
 }
