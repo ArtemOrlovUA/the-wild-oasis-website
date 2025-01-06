@@ -6,9 +6,9 @@ export const metadata = {
   title: 'Cabins',
 };
 
-export default async function Page() {
-  // CHANGE
+export const revalidate = 0;
 
+export default async function Page() {
   return (
     <div>
       <h1 className="text-4xl mb-5 text-accent-400 font-medium">Our Luxury Cabins</h1>
