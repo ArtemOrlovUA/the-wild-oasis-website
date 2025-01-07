@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import CabinList from '../_components/CabinList';
 import Spinner from '../_components/Spinner';
+import Filter from '../_components/Filter';
 
 export const metadata = {
   title: 'Cabins',
@@ -8,7 +9,9 @@ export const metadata = {
 
 export const revalidate = 0;
 
-export default async function Page() {
+export default async function Page({ searchParams }) {
+  const filter = searchParams?.capacity ?? 'all';
+
   return (
     <div>
       <h1 className="text-4xl mb-5 text-accent-400 font-medium">Our Luxury Cabins</h1>
@@ -20,8 +23,10 @@ export default async function Page() {
         paradise.
       </p>
 
-      <Suspense fallback={<Spinner />}>
-        <CabinList />
+      <Filter filter={filter} />
+
+      <Suspense fallback={<Spinner />} key={filter}>
+        <CabinList filter={filter} />
       </Suspense>
     </div>
   );
