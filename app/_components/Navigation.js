@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { auth, signOut } from '../_lib/auth';
 import Image from 'next/image';
 import ButtonLogOut from './ButtonLogOut';
+import SignOutButton from './SignOutButton';
 
 export default async function Navigation() {
   const session = await auth();
@@ -24,7 +25,7 @@ export default async function Navigation() {
             Guest area
           </Link>
         </li>
-        {session && (
+        {session ? (
           <li className="flex items-center gap-2">
             <p className="hover:text-accent-400 transition-colors">
               Currently logged as: {session?.user?.name}
@@ -37,8 +38,11 @@ export default async function Navigation() {
               className="rounded-full"
               referrerPolicy="no-referrer"
             />
-            <ButtonLogOut />
           </li>
+        ) : (
+          <Link className="hover:text-accent-400 transition-colors" href={'/login'}>
+            Login
+          </Link>
         )}
       </ul>
     </nav>
