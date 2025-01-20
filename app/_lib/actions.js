@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { auth, signIn, signOut } from './auth';
 import { supabase } from './supabase';
 import { getBookings } from './data-service';
+import { redirect } from 'next/navigation';
 
 const isCorrectNationalID = /^[a-zA-Z0-9]{6,15}$/;
 
@@ -41,6 +42,44 @@ export async function updateGuest(formData) {
   } catch (error) {
     console.error('Revalidation failed:', error);
   }
+}
+
+export async function updateReservation(formData) {
+  const session = await auth();
+  if (!session) throw new Error('Unauthorized');
+
+  const guestBookings = await getBookings(session.user.guestId);
+  const guestBookingIds = guestBookings.map((booking) => booking.id);
+
+  const bookingId = formData.get('bookingId');
+
+  if (!guestBookingIds.includes(parseInt(bookingId))) {
+    throw new Error('Error: booking does not belong to the user');
+  }
+
+  const numGuests = parseInt(formData.get('numGuests'), 10);
+  const observations = formData.get('observations');
+
+  const { data: booking, error } = await supabase
+    .from('bookings')
+    .update({ numGuests, observations })
+    .eq('id', bookingId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error('Reservation could not be updated');
+  }
+
+  try {
+    revalidatePath('/account/reservations');
+    revalidatePath(`/account/reservations/edit/${bookingId}`);
+  } catch (error) {
+    console.error('Revalidation failed:', error);
+  }
+
+  redirect(`/account/reservations`);
 }
 
 export async function deleteReservation(bookingId) {
