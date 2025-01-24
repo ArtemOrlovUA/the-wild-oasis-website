@@ -1,6 +1,40 @@
-function ReservationForm({ cabin, user }) {
-  // CHANGE
-  const { maxCapacity } = cabin;
+'use client';
+
+import { differenceInDays } from 'date-fns';
+import { createReservation } from '../_lib/actions';
+import { useReservation } from './ReservationContext';
+import ButtonForLoading from './ButtonForLoading';
+
+function ReservationForm({
+  cabin,
+  user,
+  isBreakfast,
+  handleBreakfastChange,
+  numGuests,
+  setNumGuests,
+  extrasPrice,
+}) {
+  const { range, resetRange } = useReservation();
+  const { maxCapacity, regularPrice, discount, id } = cabin;
+
+  const startDate = range?.from;
+  const endDate = range?.to;
+
+  const numNights = differenceInDays(endDate, startDate);
+  const cabinPrice = numNights * (regularPrice - discount);
+  console.log(startDate);
+  console.log(endDate);
+
+  const bookingData = {
+    startDate,
+    endDate,
+    cabinPrice,
+    numNights,
+    cabinId: id,
+    extrasPrice,
+  };
+
+  const createReservationWithData = createReservation.bind(null, bookingData);
 
   if (!user) error.log('No user provided. Need to be logged in to make a reservation.');
 
@@ -17,17 +51,21 @@ function ReservationForm({ cabin, user }) {
         />
       </div>
 
-      <form className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col">
+      <form
+        action={async (formData) => {
+          await createReservationWithData(formData);
+          resetRange();
+        }}
+        className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col justify-between">
         <div className="space-y-2">
           <label htmlFor="numGuests">How many guests?</label>
           <select
             name="numGuests"
             id="numGuests"
+            value={numGuests}
+            onChange={(e) => setNumGuests(e.target.value)}
             className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
             required>
-            <option value="" key="">
-              Select number of guests...
-            </option>
             {Array.from({ length: maxCapacity }, (_, i) => i + 1).map((x) => (
               <option value={x} key={x}>
                 {x} {x === 1 ? 'guest' : 'guests'}
@@ -46,12 +84,25 @@ function ReservationForm({ cabin, user }) {
           />
         </div>
 
-        <div className="flex justify-end items-center gap-6">
-          <p className="text-primary-300 text-base">Start by selecting dates</p>
+        <div className=""></div>
+        <label className="flex items-center gap-2" htmlFor="breakfast">
+          <input
+            type="checkbox"
+            name="isBreakfast"
+            id="breakfast"
+            checked={isBreakfast}
+            onChange={handleBreakfastChange}
+            className="rounded-sm bg-primary-200 text-primary-800 shadow-sm"
+          />
+          <span>Include breakfast? (15$ per guest per day)</span>
+        </label>
 
-          <button className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
-            Reserve now
-          </button>
+        <div className="flex justify-end items-center gap-6">
+          {startDate && endDate && startDate != endDate ? (
+            <ButtonForLoading text="Reserve now" />
+          ) : (
+            <p className="text-primary-300 text-base">Start by selecting dates</p>
+          )}
         </div>
       </form>
     </div>

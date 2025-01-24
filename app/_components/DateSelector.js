@@ -8,13 +8,21 @@ import { useReservation } from './ReservationContext';
 
 function isAlreadyBooked(range, datesArr) {
   return (
-    range.from &&
-    range.to &&
+    range?.from &&
+    range?.to &&
     datesArr.some((date) => isWithinInterval(date, { start: range.from, end: range.to }))
   );
 }
 
-function DateSelector({ settings, bookedDates, cabin }) {
+function DateSelector({
+  settings,
+  bookedDates,
+  cabin,
+  isBreakfast,
+  numGuests,
+  extrasPrice,
+  setExtrasPrice,
+}) {
   const { range, setRange, resetRange } = useReservation();
 
   const displayRange = isAlreadyBooked(range, bookedDates) ? {} : range;
@@ -24,7 +32,11 @@ function DateSelector({ settings, bookedDates, cabin }) {
   const cabinPrice = numNights * (regularPrice - discount);
 
   // SETTINGS
-  const { minBookingLength, maxBookingLength } = settings;
+  const { minBookingLength, maxBookingLength, breakfastPrice } = settings;
+
+  setExtrasPrice(() => (isBreakfast ? numGuests * breakfastPrice * numNights : 0));
+
+  const totalPrice = cabinPrice + extrasPrice;
 
   return (
     <div className="flex flex-col justify-between">
@@ -58,7 +70,7 @@ function DateSelector({ settings, bookedDates, cabin }) {
             ) : (
               <span className="text-2xl">${regularPrice}</span>
             )}
-            <span className="">/night</span>
+            <span className="">per night</span>
           </p>
           {numNights ? (
             <>
@@ -66,8 +78,14 @@ function DateSelector({ settings, bookedDates, cabin }) {
                 <span>&times;</span> <span>{numNights}</span>
               </p>
               <p>
-                <span className="text-lg font-bold uppercase">Total</span>{' '}
-                <span className="text-2xl font-semibold">${cabinPrice}</span>
+                <span className="text-lg font-bold uppercase">Total: </span>
+                <span className="text-2xl font-semibold">${totalPrice}</span>
+                {isBreakfast ? (
+                  <span className="text-lg font-semibold">
+                    {' '}
+                    (incl. ${extrasPrice} for breakfasts)
+                  </span>
+                ) : null}
               </p>
             </>
           ) : null}

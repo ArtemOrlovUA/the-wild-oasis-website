@@ -5,6 +5,7 @@ import { auth, signIn, signOut } from './auth';
 import { supabase } from './supabase';
 import { getBookings } from './data-service';
 import { redirect } from 'next/navigation';
+import { gu } from 'date-fns/locale';
 
 const isCorrectNationalID = /^[a-zA-Z0-9]{6,15}$/;
 
@@ -42,6 +43,52 @@ export async function updateGuest(formData) {
   } catch (error) {
     console.error('Revalidation failed:', error);
   }
+}
+
+export async function createReservation(bookingData, formData) {
+  const session = await auth();
+  if (!session) throw new Error('Unauthorized');
+
+  console.log(bookingData);
+
+  const newReservation = {
+    ...bookingData,
+    startDate: new Date(
+      new Date(bookingData.startDate).setUTCDate(new Date(bookingData.startDate).getUTCDate() + 1),
+    ).toISOString(),
+    endDate: new Date(
+      new Date(bookingData.endDate).setUTCDate(new Date(bookingData.endDate).getUTCDate() + 1),
+    ).toISOString(),
+    guestId: session.user.guestId,
+    numGuests: parseInt(formData.get('numGuests')),
+    observations: formData.get('observations').slice(0, 1000),
+    totalPrice: bookingData.cabinPrice + bookingData.extrasPrice,
+    status: 'unconfirmed',
+    isPaid: false,
+    hasBreakfast: formData.get('isBreakfast') === 'on' ? true : false,
+  };
+
+  console.log(newReservation);
+
+  const { data, error } = await supabase
+    .from('bookings')
+    .insert([newReservation])
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error('Reservation could not be created');
+  }
+
+  try {
+    revalidatePath('/account/reservations');
+    revalidatePath(`/cabins/${bookingData?.cabinId}`);
+  } catch (error) {
+    console.error('Revalidation failed:', error);
+  }
+
+  redirect(`/cabins/thankyou`);
 }
 
 export async function updateReservation(formData) {
