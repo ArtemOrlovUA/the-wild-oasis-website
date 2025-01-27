@@ -8,20 +8,17 @@ export default function Home() {
     <>
       <Head>
         <title>The Wild Oasis</title>
-        <meta
-          name="description"
-          content="Not just hotel, but your perfect escape for a peaceful vacation."
-        />
+
+        <meta property="og:type" content="website" />
         <meta property="og:title" content="The Wild Oasis" />
         <meta
           property="og:description"
-          content="Not just hotel, but your perfect escape for a peaceful vacation."
+          content="Not just a hotel, but your perfect escape for a peaceful vacation."
         />
         <meta
           property="og:url"
           content="https://the-wild-oasis-website-artem-orlovs-projects.vercel.app/"
         />
-        <meta property="og:type" content="website" />
       </Head>
       <main className="">
         <Image
