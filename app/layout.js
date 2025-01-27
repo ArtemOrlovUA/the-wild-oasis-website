@@ -15,6 +15,12 @@ export const metadata = {
   },
   description:
     'Luxury hotel in the heart of the forest, with a view of the mountains. Located in Italy.',
+  openGraph: {
+    title: 'The Wild Oasis',
+    description:
+      'Luxury hotel in the heart of the forest, with a view of the mountains. Located in Italy.',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({ children }) {
