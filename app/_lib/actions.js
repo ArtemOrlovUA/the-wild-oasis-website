@@ -5,7 +5,6 @@ import { auth, signIn, signOut } from './auth';
 import { supabase } from './supabase';
 import { getBookings } from './data-service';
 import { redirect } from 'next/navigation';
-import { gu } from 'date-fns/locale';
 
 const isCorrectNationalID = /^[a-zA-Z0-9]{6,15}$/;
 
