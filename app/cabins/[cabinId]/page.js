@@ -27,7 +27,6 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `Cabin ${cabin.name}`,
-    description: cabin.description,
   };
 }
 
