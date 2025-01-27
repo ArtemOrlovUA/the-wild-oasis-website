@@ -13,10 +13,8 @@ export const metadata = {
     template: '%s - The Wild Oasis',
     default: 'The Wild Oasis',
   },
-  description: {
-    default:
-      'Luxury hotel in the heart of the forest, with a view of the mountains. Located in Italy.',
-  },
+  description:
+    'Luxury hotel in the heart of the forest, with a view of the mountains. Located in Italy.',
 };
 
 export default function RootLayout({ children }) {
