@@ -41,7 +41,7 @@ export default async function Navigation() {
           </li>
         ) : (
           <Link className="hover:text-accent-400 transition-colors" href={'/login'}>
-            Login
+            Log in
           </Link>
         )}
       </ul>
