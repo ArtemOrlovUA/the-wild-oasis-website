@@ -1,16 +1,15 @@
 'use client';
 
 import { useFormStatus } from 'react-dom';
-import SpinnerMini from './SpinnerMini';
 
-function ButtonForLoading({ text }) {
+function ButtonForLoading({ text, isLoading = false }) {
   const { pending } = useFormStatus();
 
   return (
     <button
-      disabled={pending}
+      disabled={isLoading}
       className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
-      {!pending ? text : <SpinnerMini />}
+      {!isLoading ? text : 'Loading...'}
     </button>
   );
 }

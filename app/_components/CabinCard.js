@@ -6,13 +6,13 @@ function CabinCard({ cabin }) {
   const { id, name, maxCapacity, regularPrice, discount, image } = cabin;
 
   return (
-    <div className="flex border-primary-800 border">
-      <div className="flex-grow relative">
+    <div className="flex border-primary-800 border max-h-[13rem]">
+      <div className="flex-grow relative min-w-[190px]">
         <Image
           src={image}
           fill
           alt={`Cabin ${name}`}
-          className="object-cover border-r border-primary-800"
+          className="object-cover border-r border-primary-800 w-[5rem]"
         />
       </div>
 

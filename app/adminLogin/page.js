@@ -1,29 +1,34 @@
 'use client';
 
-import { useState } from 'react';
-import { supabasePublic } from '../_lib/supabaseAdmin';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-
-export async function signInAdmin({ email, password }) {
-  const { data, error } = await supabasePublic.auth.signInWithPassword({ email, password });
-  if (error) {
-    console.error(error.message);
-    return { error };
-  }
-  console.log(data);
-  return data;
-}
+import { useRouter } from 'next/navigation';
+import { getCurrentUser, signInAdmin } from '../_lib/data-service-admin';
 
 function Page() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  let user;
+  const router = useRouter();
+
+  useEffect(() => {
+    async function checkIsAuth() {
+      const user = await getCurrentUser();
+      if (user) {
+        console.log('user');
+        router.push('/adminDashboard');
+      }
+    }
+    checkIsAuth();
+  }, [router]);
 
   async function handleLogin() {
     const data = await signInAdmin({ email, password });
-    !data?.user && toast.error('Login failed: please check your credentials');
-    // const user = await getCurrentUser();
-    // console.log(user);
+    if (!data?.user) {
+      toast.error('Login failed: please check your credentials');
+    } else {
+      toast.success('Login successful!');
+      router.push('/adminDashboard');
+    }
   }
 
   return (
@@ -34,18 +39,20 @@ function Page() {
         <input
           type="text"
           value={email}
+          className="focus:outline-none border-2 focus:border-accent-500 transition-all text-[1.5rem] rounded-[20px] p-2"
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Please, enter your email"></input>
         <input
           type="password"
           value={password}
+          className="focus:outline-none border-2 focus:border-accent-500 transition-all text-[1.5rem] rounded-[20px] p-2"
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Please, enter your password"></input>
       </div>
 
       <button
         onClick={() => handleLogin()}
-        className="bg-accent-500 px-8 py-3 text-primary-800 text-lg font-semibold hover:bg-accent-600 transition-all">
+        className="bg-accent-500 px-8 py-3 rounded-[20px] text-primary-800 text-lg font-semibold hover:bg-accent-600 transition-all duration-200">
         Log in
       </button>
     </div>

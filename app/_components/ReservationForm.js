@@ -22,8 +22,6 @@ function ReservationForm({
 
   const numNights = differenceInDays(endDate, startDate);
   const cabinPrice = numNights * (regularPrice - discount);
-  console.log(startDate);
-  console.log(endDate);
 
   const bookingData = {
     startDate,

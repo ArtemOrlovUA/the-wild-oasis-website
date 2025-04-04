@@ -1,14 +1,7 @@
 'use client';
 
-import { supabasePublic } from '../_lib/supabaseAdmin';
-
-export async function getCurrentUser() {
-  const { data, error } = await supabasePublic.auth.getUser();
-
-  if (error) throw new Error(error.message);
-
-  return data?.user;
-}
+import CreateCabinForm from '../_components/CreateCabinForm';
+import { getCurrentUser } from '../_lib/data-service-admin';
 
 function page() {
   async function getUser() {
@@ -16,15 +9,7 @@ function page() {
     console.log(user);
   }
 
-  return (
-    <div>
-      <button
-        onClick={() => getUser()}
-        className="bg-accent-500 px-8 py-3 text-primary-800 text-lg font-semibold hover:bg-accent-600 transition-all">
-        Get current user
-      </button>
-    </div>
-  );
+  return <div className="items-center">{<CreateCabinForm />}</div>;
 }
 
 export default page;
