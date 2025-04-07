@@ -3,15 +3,14 @@
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import ButtonForLoading from './ButtonForLoading';
-import { createCabin } from '../_lib/data-service-admin';
 import { useState } from 'react';
+import { createCabin } from '../_lib/actions';
 
 function CreateCabinForm() {
   const {
     register,
     handleSubmit,
     reset,
-    getValues,
     watch,
     formState: { errors },
   } = useForm();
@@ -22,9 +21,21 @@ function CreateCabinForm() {
   async function onSubmit(data) {
     setIsLoading(true);
     try {
-      const image = typeof data.image === 'string' ? data.image : data.image[0];
+      // Create FormData object to handle file upload
+      const formData = new FormData();
 
-      await createCabin({ ...data, image });
+      // Append all form fields to FormData
+      Object.keys(data).forEach((key) => {
+        if (key === 'image' && data[key] instanceof FileList) {
+          // Handle file upload
+          formData.append('image', data[key][0]);
+        } else {
+          formData.append(key, data[key]);
+        }
+      });
+
+      // Call the server action with FormData
+      await createCabin(formData);
 
       reset();
       toast.success('Cabin created successfully!');
@@ -41,8 +52,8 @@ function CreateCabinForm() {
   }
 
   return (
-    <div className="overflow-y-auto p-4">
-      <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6 max-w-[50vw] mx-auto">
+    <div className="overflow-y-auto w-[60vw] p-4">
+      <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
         {/* Cabin Name */}
         <div>
           <label htmlFor="name" className="block font-medium mb-1">

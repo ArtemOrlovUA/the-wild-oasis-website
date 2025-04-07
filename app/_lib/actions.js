@@ -160,3 +160,104 @@ export async function signInAction() {
 export async function signOutAction() {
   await signOut({ redirectTo: '/' });
 }
+
+//CABINS OPERATIONS
+
+export async function createCabin(formData) {
+  const name = formData.get('name');
+  const maxCapacity = Number(formData.get('maxCapacity'));
+  const regularPrice = Number(formData.get('regularPrice'));
+  const discount = Number(formData.get('discount'));
+  const description = formData.get('description');
+  const image = formData.get('image');
+
+  let imagePath;
+
+  try {
+    // Check if we have a new image file to upload
+    if (image instanceof File) {
+      const imageName = `${Math.random()}-${image.name}`.replaceAll('/', '');
+      imagePath = `${process.env.SUPABASE_URL}/storage/v1/object/public/cabin-images/${imageName}`;
+
+      const { data, error } = await supabase
+        .from('cabins')
+        .insert([
+          {
+            name,
+            maxCapacity,
+            regularPrice,
+            discount,
+            description,
+            image: imagePath,
+          },
+        ])
+        .select();
+
+      if (error) {
+        console.error(error.message);
+        throw new Error('An error occurred while creating the cabin');
+      }
+
+      // Upload the image file to storage
+      const { error: uploadError } = await supabase.storage
+        .from('cabin-images')
+        .upload(imageName, image, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (uploadError) {
+        // Roll back if image upload fails
+        await supabase.from('cabins').delete().eq('id', data[0].id);
+        console.error(uploadError.message);
+        throw new Error('Image upload failed');
+      }
+
+      revalidatePath('/adminDashboard', 'layout');
+
+      return data;
+    } else if (typeof image === 'string') {
+      imagePath = image;
+
+      const { data, error } = await supabase
+        .from('cabins')
+        .insert([
+          {
+            name,
+            maxCapacity,
+            regularPrice,
+            discount,
+            description,
+            image: imagePath,
+          },
+        ])
+        .select();
+
+      if (error) {
+        console.error(error.message);
+        throw new Error('An error occurred while creating the cabin');
+      }
+
+      revalidatePath('/adminDashboard', 'layout');
+
+      return data;
+    } else {
+      throw new Error('Invalid image format');
+    }
+  } catch (error) {
+    console.error('Error in createCabin:', error);
+    throw error;
+  }
+}
+
+export async function deleteCabin(id) {
+  const { data, error } = await supabase.from('cabins').delete().eq('id', id);
+
+  if (error) {
+    console.error(error.message);
+    throw new Error('An error occurred while deleting the cabin');
+  }
+
+  revalidatePath('/adminDashboard');
+  return data;
+}

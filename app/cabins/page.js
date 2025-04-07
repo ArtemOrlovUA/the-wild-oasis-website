@@ -2,7 +2,6 @@ import { Suspense } from 'react';
 import CabinList from '../_components/CabinList';
 import Spinner from '../_components/Spinner';
 import Filter from '../_components/Filter';
-import Reservation from '../_components/Reservation';
 import ReservationReminder from '../_components/ReservationReminder';
 
 export const metadata = {
@@ -15,7 +14,7 @@ export default async function Page({ searchParams }) {
   const filter = searchParams?.capacity ?? 'all';
 
   return (
-    <div>
+    <div className="overflow-hidden">
       <h1 className="text-4xl mb-5 text-accent-400 font-medium">Our Luxury Cabins</h1>
       <p className="text-primary-200 text-lg mb-10">
         Cozy yet luxurious cabins, located right in the heart of the Italian Dolomites. Imagine
