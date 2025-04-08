@@ -81,7 +81,9 @@ function Page() {
             {isBookingSettingsOpened ? 'Hide' : 'Show'} booking settings
           </button>
         </div>
-        <div className={`${isBookingSettingsOpened ? '' : 'hidden'}`}>{<UpdateSettingsForm />}</div>
+        <div className={`flex justify-center ${isBookingSettingsOpened ? '' : 'hidden'}`}>
+          {<UpdateSettingsForm />}
+        </div>
       </div>
     </div>
   );
