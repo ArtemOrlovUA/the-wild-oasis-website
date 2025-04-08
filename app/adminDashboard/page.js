@@ -49,7 +49,7 @@ function Page() {
             {isCreateFormOpened ? 'Hide' : 'Show'} form
           </button>
         </div>
-        <div className={`${isCreateFormOpened ? '' : 'hidden'}`}>
+        <div className={`items-center ${isCreateFormOpened ? '' : 'hidden'}`}>
           <CreateCabinForm />
         </div>
       </div>
@@ -65,7 +65,7 @@ function Page() {
             {isCabinListOpened ? 'Hide' : 'Show'} cabins
           </button>
         </div>
-        <div className={`items-center ${isCabinListOpened ? '' : 'hidden'}`}>
+        <div className={`${isCabinListOpened ? '' : 'hidden'}`}>
           {<CabinListAdminPanel cabins={cabins} />}
         </div>
       </div>

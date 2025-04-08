@@ -48,7 +48,7 @@ function CreateCabinForm() {
   }
 
   return (
-    <div className="overflow-y-auto w-[60vw] p-4">
+    <div className="overflow-y-auto w-[60vw] p-4 items-center">
       <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
         {/* Cabin Name */}
         <div>
