@@ -49,7 +49,10 @@ function Page() {
             {isCreateFormOpened ? 'Hide' : 'Show'} form
           </button>
         </div>
-        <div className={`items-center ${isCreateFormOpened ? '' : 'hidden'}`}>
+        <div
+          className={`flex items-center justify-center min-h-screen ${
+            isCreateFormOpened ? '' : 'hidden'
+          }`}>
           <CreateCabinForm />
         </div>
       </div>
