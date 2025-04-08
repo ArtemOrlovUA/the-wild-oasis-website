@@ -127,3 +127,29 @@ export async function editCabin(id, cabin) {
 
   return data;
 }
+
+// SETTINGS
+
+export async function getSettings() {
+  const { data, error } = await supabasePublic.from('settings').select('*').single();
+
+  if (error) {
+    console.error(error);
+    throw new Error('Settings could not be loaded');
+  }
+  return data;
+}
+
+export async function updateSettings(newSettings) {
+  const { data, error } = await supabasePublic
+    .from('settings')
+    .update(newSettings)
+    .eq('id', 1)
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error('Settings could not be updated');
+  }
+  return data;
+}

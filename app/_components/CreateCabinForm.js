@@ -21,20 +21,16 @@ function CreateCabinForm() {
   async function onSubmit(data) {
     setIsLoading(true);
     try {
-      // Create FormData object to handle file upload
       const formData = new FormData();
 
-      // Append all form fields to FormData
       Object.keys(data).forEach((key) => {
         if (key === 'image' && data[key] instanceof FileList) {
-          // Handle file upload
           formData.append('image', data[key][0]);
         } else {
           formData.append(key, data[key]);
         }
       });
 
-      // Call the server action with FormData
       await createCabin(formData);
 
       reset();

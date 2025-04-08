@@ -13,9 +13,11 @@ function ReservationForm({
   numGuests,
   setNumGuests,
   extrasPrice,
+  settings,
 }) {
   const { range, resetRange } = useReservation();
   const { maxCapacity, regularPrice, discount, id } = cabin;
+  const { breakfastPrice } = settings;
 
   const startDate = range?.from;
   const endDate = range?.to;
@@ -92,7 +94,7 @@ function ReservationForm({
             onChange={handleBreakfastChange}
             className="rounded-sm bg-primary-200 text-primary-800 shadow-sm"
           />
-          <span>Include breakfast? (15$ per guest per day)</span>
+          <span>Include breakfast? ({breakfastPrice}$ per guest per day)</span>
         </label>
 
         <div className="flex justify-end items-center gap-6">

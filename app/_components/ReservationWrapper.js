@@ -32,6 +32,7 @@ function ReservationWrapper({ settings, bookedDates, cabin, user }) {
         numGuests={numGuests}
         setNumGuests={setNumGuests}
         extrasPrice={extrasPrice}
+        settings={settings}
       />
     </>
   );
