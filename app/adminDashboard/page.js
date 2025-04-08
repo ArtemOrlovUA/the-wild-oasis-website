@@ -65,7 +65,7 @@ function Page() {
             {isCabinListOpened ? 'Hide' : 'Show'} cabins
           </button>
         </div>
-        <div className={`${isCabinListOpened ? '' : 'hidden'}`}>
+        <div className={`items-center ${isCabinListOpened ? '' : 'hidden'}`}>
           {<CabinListAdminPanel cabins={cabins} />}
         </div>
       </div>
