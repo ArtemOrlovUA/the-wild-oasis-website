@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { auth, signIn, signOut } from './auth';
 import { supabase } from './supabase';
-import { getBookings } from './data-service';
+import { getBookings, getSettings } from './data-service';
 import { redirect } from 'next/navigation';
 
 const isCorrectNationalID = /^[a-zA-Z0-9]{6,15}$/;
@@ -12,6 +12,9 @@ export async function updateGuest(formData) {
   const session = await auth();
   if (!session) throw new Error('Unauthorized');
 
+  console.log(formData);
+
+  const fullName = formData.get('fullName').trim();
   const nationalID = formData.get('nationalID');
   const [nationality, countryFlag] = formData.get('nationality').split('%');
 
@@ -20,6 +23,7 @@ export async function updateGuest(formData) {
   }
 
   const updateData = {
+    fullName,
     nationality,
     countryFlag,
     nationalID,
@@ -48,6 +52,25 @@ export async function createReservation(bookingData, formData) {
   const session = await auth();
   if (!session) throw new Error('Unauthorized');
 
+  const { minBookinglength, maxBookinglength, maxGuestsPerBooking, breakfastPrice } =
+    await getSettings();
+
+  if (bookingData.numNights < minBookinglength || bookingData.numNights > maxBookinglength) {
+    throw new Error(
+      'Invalid booking length: must be between ' +
+        minBookinglength +
+        ' and ' +
+        maxBookinglength +
+        ' nights',
+    );
+  }
+
+  if (parseInt(formData.get('numGuests')) > maxGuestsPerBooking) {
+    throw new Error('Invalid number of guests: must be less than ' + maxGuestsPerBooking);
+  }
+
+  console.log(maxGuestsPerBooking);
+
   console.log(bookingData);
 
   const newReservation = {
@@ -66,8 +89,6 @@ export async function createReservation(bookingData, formData) {
     isPaid: false,
     hasBreakfast: formData.get('isBreakfast') === 'on' ? true : false,
   };
-
-  console.log(newReservation);
 
   const { data, error } = await supabase
     .from('bookings')

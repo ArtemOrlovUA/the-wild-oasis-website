@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import Spinner from './_components/Spinner';
-import { getSettings, updateSettings } from './_lib/data-service-admin';
+import Spinner from './Spinner';
+import { getSettings, updateSettings } from '../_lib/data-service-admin';
 
 function UpdateSettingsForm() {
   const [settings, setSettings] = useState(null);
@@ -22,8 +22,6 @@ function UpdateSettingsForm() {
     }
     init();
   }, []);
-
-  console.log(settings);
 
   const {
     register,

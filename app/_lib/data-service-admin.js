@@ -1,9 +1,15 @@
-'use client';
-
 import { revalidatePath } from 'next/cache';
 import { supabasePublic } from './supabaseAdmin';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+// Helpers
+export function getToday({ end } = {}) {
+  const now = new Date();
+  if (end) now.setUTCHours(23, 59, 59, 999);
+  else now.setUTCHours(0, 0, 0, 0);
+  return now.toISOString();
+}
 
 export async function signInAdmin({ email, password }) {
   const { data, error } = await supabasePublic.auth.signInWithPassword({ email, password });
@@ -45,6 +51,39 @@ export const getCabins = async function () {
 
   return data;
 };
+
+// ANALYTICS
+// Returns all BOOKINGS that were created after the given date (ISO string)
+export async function getBookingsAfterDate(date) {
+  const { data, error } = await supabasePublic
+    .from('bookings')
+    .select('created_at, totalPrice, extrasPrice, cabinId')
+    .gte('created_at', date)
+    .lte('created_at', getToday({ end: true }));
+
+  if (error) {
+    console.error(error);
+    throw new Error('Bookings could not get loaded');
+  }
+
+  return data;
+}
+
+// Returns all STAYS that were started after the given date (ISO string)
+export async function getStaysAfterDate(date) {
+  const { data, error } = await supabasePublic
+    .from('bookings')
+    .select('*, guests(fullName)')
+    .gte('startDate', date)
+    .lte('startDate', getToday());
+
+  if (error) {
+    console.error(error);
+    throw new Error('Stays could not get loaded');
+  }
+
+  return data;
+}
 
 export async function createCabin(cabin) {
   let imagePath;

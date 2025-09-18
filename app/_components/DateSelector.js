@@ -31,7 +31,6 @@ function DateSelector({
   const numNights = differenceInDays(displayRange?.to, displayRange?.from);
   const cabinPrice = numNights * (regularPrice - discount);
 
-  // SETTINGS
   const { minBookingLength, maxBookingLength, breakfastPrice } = settings;
 
   setExtrasPrice(() => (isBreakfast ? numGuests * breakfastPrice * numNights : 0));
@@ -43,7 +42,13 @@ function DateSelector({
       <DayPicker
         className="pt-6 place-self-center"
         classNames={{
-          selected: `bg-accent-500 border-accent-500 text-black`,
+          selected: `bg-accent-600 border-orange-500 text-white`,
+          range_start: `bg-accent-600 border-orange-500 text-white rounded-l-[20rem]`,
+          range_middle: `bg-accent-600/40 border-orange-500 text-black`,
+          range_end: `bg-accent-600 border-orange-500 text-white rounded-r-[20rem]`,
+          today: `text-accent-500`,
+          caption: `text-accent-600`,
+          months_dropdown: `text-black`,
         }}
         mode="range"
         onSelect={(range) => setRange(range)}

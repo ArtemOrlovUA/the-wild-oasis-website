@@ -33,7 +33,58 @@
 /* For data picker */
 .rdp {
   --rdp-cell-size: 32px !important;
-  --rdp-accent-color: theme('colors.accent.500') !important;
+  --rdp-accent-color: theme('colors.accent.600') !important;
   --rdp-background-color: theme('colors.accent.600') !important;
   margin: 0 !important;
+}
+
+/* Navigation arrows - comprehensive targeting */
+.rdp-nav_button_previous,
+.rdp-nav_button_next,
+.rdp-nav button,
+.rdp-button_reset,
+.rdp-chevron,
+.rdp button[name='previous-month'],
+.rdp button[name='next-month'] {
+  color: theme('colors.accent.600') !important;
+}
+
+.rdp-nav_button_previous:hover,
+.rdp-nav_button_next:hover,
+.rdp-nav button:hover,
+.rdp-chevron:hover {
+  color: theme('colors.accent.600') !important;
+}
+
+/* Additional CSS variable approach */
+.rdp-root {
+  --rdp-accent-color: theme('colors.accent.600') !important;
+}
+
+/* Direct element targeting */
+.rdp svg,
+.rdp-nav svg {
+  color: theme('colors.accent.600') !important;
+  fill: theme('colors.accent.600') !important;
+}
+
+/* Remove dropdown arrows for month and year selectors */
+.rdp-caption_dropdowns select {
+  appearance: none !important;
+  background: transparent !important;
+  color: theme('colors.accent.600') !important;
+}
+
+/* Hide any default dropdown arrows */
+.rdp-dropdown_month::after,
+.rdp-dropdown_year::after,
+.rdp-caption_dropdowns select::after,
+.rdp-dropdown select::after,
+.rdp select::after {
+  display: none !important;
+}
+
+/* Style dropdown options - past months grey, available months black */
+.rdp-dropdown_month option {
+  color: black !important;
 }
